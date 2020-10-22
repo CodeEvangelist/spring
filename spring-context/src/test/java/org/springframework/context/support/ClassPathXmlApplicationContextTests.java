@@ -49,6 +49,11 @@ import static org.junit.Assert.*;
  * @author Juergen Hoeller
  * @author Chris Beams
  */
+
+/**
+ * 这里是对于xml配置spring的context单元测试
+ */
+
 public class ClassPathXmlApplicationContextTests {
 
 	private static final String PATH = "/org/springframework/context/support/";
@@ -71,10 +76,14 @@ public class ClassPathXmlApplicationContextTests {
 	private static final String ALIAS_FOR_PARENT_CONTEXT = PATH + "aliasForParent.xml";
 	private static final String TEST_PROPERTIES = "test.properties";
 
-
+	/**
+	 * 首次学习spring中bean的xml加载流程
+	 */
 	@Test
 	public void testSingleConfigLocation() {
+		System.out.println("xml file path:"+FQ_SIMPLE_CONTEXT);
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(FQ_SIMPLE_CONTEXT);
+
 		assertTrue(ctx.containsBean("someMessageSource"));
 		ctx.close();
 	}
