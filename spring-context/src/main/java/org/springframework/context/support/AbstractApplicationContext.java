@@ -80,8 +80,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.web.servlet.FrameworkServlet;
-import org.springframework.web.servlet.HttpServletBean;
 
 /**
  * Abstract implementation of the {@link org.springframework.context.ApplicationContext}
