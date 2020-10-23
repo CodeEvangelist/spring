@@ -80,6 +80,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.web.servlet.FrameworkServlet;
+import org.springframework.web.servlet.HttpServletBean;
 
 /**
  * Abstract implementation of the {@link org.springframework.context.ApplicationContext}
@@ -513,6 +515,23 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		return this.applicationListeners;
 	}
 
+	/**
+	 * 核心方法
+	 * 1、直接使用context时，需要主动或者在context的构造方法中会调用此方法
+	 * 2、spring项目放在tomcat等容器中时，web容器也会通过servlet标准的接口调用到方法
+	 * 举例:以外部tomcat启动spring项目为例，说明启动步骤
+	 *   ->tomcat启动...
+	 *   ->{@link javax.servlet.GenericServlet#init}
+	 *   ->{@link org.springframework.web.servlet.HttpServletBean#init()}
+	 *   ->{@link org.springframework.web.servlet.FrameworkServlet#initServletBean()}
+	 *   ->{@link org.springframework.web.servlet.FrameworkServlet#initWebApplicationContext()}
+	 *   ->{@link org.springframework.web.servlet.FrameworkServlet#createWebApplicationContext}
+	 *   ->{@link org.springframework.web.servlet.FrameworkServlet#configureAndRefreshWebApplicationContext}
+	 *   ->{@link AbstractApplicationContext#refresh()}
+	 *
+	 * @throws BeansException
+	 * @throws IllegalStateException
+	 */
 	@Override
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
