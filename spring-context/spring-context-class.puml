@@ -60,4 +60,18 @@ AbstractRefreshableConfigApplicationContext <|-- AbstractXmlApplicationContext
 class ClassPathXmlApplicationContext
 /'从xml-context初始spring-context体系'/
 AbstractXmlApplicationContext <|-- ClassPathXmlApplicationContext
+
+interface AliasRegistry
+interface BeanDefinitionRegistry
+AliasRegistry <|-- BeanDefinitionRegistry
+
+class GenericApplicationContext
+BeanDefinitionRegistry <|-- GenericApplicationContext
+AbstractApplicationContext <|-- GenericApplicationContext
+interface AnnotationConfigRegistry
+/'加入annotation-context和xml-context作比较来看出spring对于context体系的设计'/
+class AnnotationConfigApplicationContext
+GenericApplicationContext <|-- AnnotationConfigApplicationContext
+AnnotationConfigRegistry <|-- AnnotationConfigApplicationContext
+
 @enduml

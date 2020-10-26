@@ -211,7 +211,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	/** Statically specified listeners */
 	private final Set<ApplicationListener<?>> applicationListeners = new LinkedHashSet<>();
 
-	/** Local listeners registered before refresh */
+	/**
+	 * Local listeners registered before refresh
+	 *
+	 * 只知道是一个早期事件监听器,对于早期事件的定义为`还没有注册到事件多播器上的时候都称为早期事件`
+	 * 目前还没了解到此监听器的实际用途，或者说应用例子
+	 */
 	@Nullable
 	private Set<ApplicationListener<?>> earlyApplicationListeners;
 
@@ -527,8 +532,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 *   ->{@link org.springframework.web.servlet.FrameworkServlet#configureAndRefreshWebApplicationContext}
 	 *   ->{@link AbstractApplicationContext#refresh()}
 	 *
-	 * @throws BeansException
-	 * @throws IllegalStateException
+	 * @throws BeansException        bean异常
+	 * @throws IllegalStateException 非法状态
 	 */
 	@Override
 	public void refresh() throws BeansException, IllegalStateException {
@@ -598,6 +603,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	/**
 	 * Prepare this context for refreshing, setting its startup date and
 	 * active flag as well as performing any initialization of property sources.
+	 *
+	 * 在刷新spring-context之前，设置启动时间和启动标识还有一些必须要的初始化属性
 	 */
 	protected void prepareRefresh() {
 		// Switch to active.
@@ -610,10 +617,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 
 		// Initialize any placeholder property sources in the context environment.
+		//初始化context中的占位符,目前并不清楚这一步在spring项目中实现了什么功能？
 		initPropertySources();
 
 		// Validate that all properties marked as required are resolvable:
 		// see ConfigurablePropertyResolver#setRequiredProperties
+		//校验spring必须的参数，没有就会异常
 		getEnvironment().validateRequiredProperties();
 
 		// Store pre-refresh ApplicationListeners...
@@ -637,6 +646,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * @see org.springframework.web.context.support.WebApplicationContextUtils#initServletPropertySources
 	 */
 	protected void initPropertySources() {
+		//默认没有实现，让子类实现
 		// For subclasses: do nothing by default.
 	}
 
