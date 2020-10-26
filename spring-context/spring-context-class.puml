@@ -1,0 +1,63 @@
+@startuml
+
+interface ResourceLoader
+
+interface AutoCloseable
+interface Closeable
+interface EnvironmentCapable
+interface BeanFactory
+interface ListableBeanFactory
+interface HierarchicalBeanFactory
+interface MessageSource
+interface ApplicationEventPublisher
+interface ResourcePatternResolver
+interface ApplicationContext
+
+
+
+AutoCloseable <|-- Closeable
+BeanFactory <|-- ListableBeanFactory
+BeanFactory <|-- HierarchicalBeanFactory
+ResourceLoader <|-- ResourcePatternResolver
+ListableBeanFactory <|-- ApplicationContext
+HierarchicalBeanFactory <|-- ApplicationContext
+ResourcePatternResolver <|-- ApplicationContext
+EnvironmentCapable <|-- ApplicationContext
+MessageSource <|-- ApplicationContext
+ApplicationEventPublisher <|-- ApplicationContext
+
+
+
+interface Lifecycle
+interface ConfigurableApplicationContext
+
+Lifecycle <|-- ConfigurableApplicationContext
+Closeable <|-- ConfigurableApplicationContext
+ApplicationContext <|-- ConfigurableApplicationContext
+
+abstract class AbstractApplicationContext
+class DefaultResourceLoader
+ResourceLoader <|-- DefaultResourceLoader
+ConfigurableApplicationContext <|-- AbstractApplicationContext
+DefaultResourceLoader <|-- AbstractApplicationContext
+
+abstract class AbstractRefreshableApplicationContext
+AbstractApplicationContext <|-- AbstractRefreshableApplicationContext
+
+interface Aware
+interface BeanNameAware
+Aware <|-- BeanNameAware
+
+interface InitializingBean
+abstract class AbstractRefreshableConfigApplicationContext
+InitializingBean <|-- AbstractRefreshableConfigApplicationContext
+BeanNameAware <|-- AbstractRefreshableConfigApplicationContext
+AbstractRefreshableApplicationContext <|-- AbstractRefreshableConfigApplicationContext
+
+abstract class AbstractXmlApplicationContext
+AbstractRefreshableConfigApplicationContext <|-- AbstractXmlApplicationContext
+
+class ClassPathXmlApplicationContext
+/'从xml-context初始spring-context体系'/
+AbstractXmlApplicationContext <|-- ClassPathXmlApplicationContext
+@enduml
