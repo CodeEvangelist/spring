@@ -220,7 +220,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Nullable
 	private Set<ApplicationListener<?>> earlyApplicationListeners;
 
-	/** ApplicationEvents published before the multicaster setup */
+	/**
+	 *
+	 * ApplicationEvents published before the multicaster setup
+	 *
+	 * 早期事件，定义为`还没有注册到事件多播器上的时候都称为早期事件`
+	 */
 	@Nullable
 	private Set<ApplicationEvent> earlyApplicationEvents;
 
@@ -539,16 +544,24 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	public void refresh() throws BeansException, IllegalStateException {
 		synchronized (this.startupShutdownMonitor) {
 			// Prepare this context for refreshing.
+			//容器刷新前的准备
 			prepareRefresh();
 
 			// Tell the subclass to refresh the internal bean factory.
+			//通知子类刷新内部的bean factory，本质上就是刷新当前context的bean factory
+			//而放在spring应用的举例就是，当使用xml或注解配置一些bean时，每一个bean对应一个BenDefinition，会放在beanFactory
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
+			//为工厂设置类的加载器、表达式解析器、属性编辑器注册器等
+			//为工厂添加后处理器、要忽略的依赖接口
+			//在工厂中注册可解析的依赖
+			//在工厂中提前注册一些单例Bean，暂时不了解设置、注册的这些解析等等的意义 ？spring？
 			prepareBeanFactory(beanFactory);
 
 			try {
 				// Allows post-processing of the bean factory in context subclasses.
+				// 好像是web context中用的  ？spring？
 				postProcessBeanFactory(beanFactory);
 
 				// Invoke factory processors registered as beans in the context.
@@ -605,11 +618,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * active flag as well as performing any initialization of property sources.
 	 *
 	 * 在刷新spring-context之前，设置启动时间和启动标识还有一些必须要的初始化属性
+	 * 初始化监听器，早期事件
 	 */
 	protected void prepareRefresh() {
 		// Switch to active.
 		this.startupDate = System.currentTimeMillis();
+		//关闭标志
 		this.closed.set(false);
+		//启动标志
 		this.active.set(true);
 
 		if (logger.isInfoEnabled()) {
@@ -631,12 +647,14 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 		else {
 			// Reset local application listeners to pre-refresh state.
+			//合并监听器
 			this.applicationListeners.clear();
 			this.applicationListeners.addAll(this.earlyApplicationListeners);
 		}
 
 		// Allow for the collection of early ApplicationEvents,
 		// to be published once the multicaster is available...
+		//初始化早期事件，在广播可用时发布出去
 		this.earlyApplicationEvents = new LinkedHashSet<>();
 	}
 
@@ -652,12 +670,15 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 	/**
 	 * Tell the subclass to refresh the internal bean factory.
+	 * 通知子类刷新内部的bean factory
 	 * @return the fresh BeanFactory instance
 	 * @see #refreshBeanFactory()
 	 * @see #getBeanFactory()
 	 */
 	protected ConfigurableListableBeanFactory obtainFreshBeanFactory() {
+		//刷新BeanFactory，本质是更换当前context中的beanFactory的引用
 		refreshBeanFactory();
+
 		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
 		if (logger.isDebugEnabled()) {
 			logger.debug("Bean factory for " + getDisplayName() + ": " + beanFactory);
@@ -1382,16 +1403,20 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	//---------------------------------------------------------------------
 	// Abstract methods that must be implemented by subclasses
 	//---------------------------------------------------------------------
-
 	/**
+	 *
 	 * Subclasses must implement this method to perform the actual configuration load.
 	 * The method is invoked by {@link #refresh()} before any other initialization work.
 	 * <p>A subclass will either create a new bean factory and hold a reference to it,
 	 * or return a single BeanFactory instance that it holds. In the latter case, it will
 	 * usually throw an IllegalStateException if refreshing the context more than once.
-	 * @throws BeansException if initialization of the bean factory failed
-	 * @throws IllegalStateException if already initialized and multiple refresh
-	 * attempts are not supported
+	 *
+	 * 子类必须实现这个方法以实现实际的配置加载
+	 * 在任何其他初始化工作开始之前，会被{@link #refresh()}方法调用
+	 * 子类会创建一个新的bean factory，并且会持有对它的引用，或者返回一个持有的单例BeanFactory实例
+	 * 再或者如果刷新context大于1次,通常会抛出一个IllegalStateException异常
+	 * @throws BeansException         如果初始化bean factory异常
+	 * @throws IllegalStateException  如果已被初始化或尝试多次刷新不被支持
 	 */
 	protected abstract void refreshBeanFactory() throws BeansException, IllegalStateException;
 
@@ -1403,15 +1428,20 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	protected abstract void closeBeanFactory();
 
 	/**
+	 *
 	 * Subclasses must return their internal bean factory here. They should implement the
 	 * lookup efficiently, so that it can be called repeatedly without a performance penalty.
 	 * <p>Note: Subclasses should check whether the context is still active before
 	 * returning the internal bean factory. The internal factory should generally be
 	 * considered unavailable once the context has been closed.
-	 * @return this application context's internal bean factory (never {@code null})
-	 * @throws IllegalStateException if the context does not hold an internal bean factory yet
-	 * (usually if {@link #refresh()} has never been called) or if the context has been
-	 * closed already
+	 *
+	 * 实现类必须返回其内部持有的bean factory，bean factory的获取应该是高效率的，以至于可以重复调用而不会造成性能损失
+	 * 在返回内部工厂之前，实现类应该检查context是否仍然是激活状态
+	 * 一旦context已经停止了，实现类中的bean factory的引用一般应该确认为不可用
+	 *
+	 * @return 返回实现类中持有的bean factory，永远不能为null
+	 * @throws IllegalStateException 如果context在{@link #refresh()}方法已经调用过还没有持有一个内部的
+	 * bean factory或者context已经关闭了应该返回此异常，对于这两种情况的产生时机请看:
 	 * @see #refreshBeanFactory()
 	 * @see #closeBeanFactory()
 	 */

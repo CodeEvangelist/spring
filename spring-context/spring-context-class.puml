@@ -74,4 +74,7 @@ class AnnotationConfigApplicationContext
 GenericApplicationContext <|-- AnnotationConfigApplicationContext
 AnnotationConfigRegistry <|-- AnnotationConfigApplicationContext
 
+abstract class AbstractRefreshableWebApplicationContext
+AbstractRefreshableConfigApplicationContext <|-- AbstractRefreshableWebApplicationContext
+
 @enduml
