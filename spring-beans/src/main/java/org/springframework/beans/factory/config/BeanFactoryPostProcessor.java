@@ -37,6 +37,16 @@ import org.springframework.beans.BeansException;
  * If bean instance interaction is required, consider implementing
  * {@link BeanPostProcessor} instead.
  *
+ * 允许自定义修改应用程序上下文的bean定义，调整上下文的基础bean工厂的bean属性值。
+ * 应用程序上下文可以在其bean定义中自动检测BeanFactoryPostProcessor bean，
+ * 并在创建任何其他bean之前先创建BeanFactoryPostProcessor。
+ * BeanFactoryPostProcessor可以与bean定义交互并修改bean定义，
+ * 但绝不能与bean实例交互。这样做可能会导致bean过早实例化，违反容器并导致意外的副作用。
+ * 如果需要bean实例交互，请考虑实现BeanPostProcessor。
+ * 实现该接口，可以允许我们的程序获取到BeanFactory，从而修改BeanFactory，
+ * 可以实现编程式的往Spring容器中添加Bean
+ *
+ *
  * @author Juergen Hoeller
  * @since 06.07.2003
  * @see BeanPostProcessor
