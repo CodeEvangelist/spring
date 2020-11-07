@@ -127,6 +127,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		implements ConfigurableApplicationContext {
 
 	/**
+	 *
+	 * 在此工厂中，国际化消息 MessageSource 的 bean的名称
+	 * 如果没有提供消息，消息解析将委托给父节点
+	 *
 	 * Name of the MessageSource bean in the factory.
 	 * If none is supplied, message resolution is delegated to the parent.
 	 * @see MessageSource
@@ -134,6 +138,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	public static final String MESSAGE_SOURCE_BEAN_NAME = "messageSource";
 
 	/**
+	 * 在此工厂中，SpringBean 的生命周期LifecycleProcessor 的 bean的名称
+	 * 如果没有提供，则使用DefaultLifecycleProcessor
+	 *
 	 * Name of the LifecycleProcessor bean in the factory.
 	 * If none is supplied, a DefaultLifecycleProcessor is used.
 	 * @see org.springframework.context.LifecycleProcessor
@@ -142,6 +149,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	public static final String LIFECYCLE_PROCESSOR_BEAN_NAME = "lifecycleProcessor";
 
 	/**
+	 * 在此工厂中，应用事件多路广播器 的 bean的名称
+	 * 如果没有提供，则使用默认的simpleapplicationeventmultiaster
+	 *
 	 * Name of the ApplicationEventMulticaster bean in the factory.
 	 * If none is supplied, a default SimpleApplicationEventMulticaster is used.
 	 * @see org.springframework.context.event.ApplicationEventMulticaster
@@ -160,55 +170,116 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	/** Logger used by this class. Available to subclasses. */
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	/** Unique id for this context, if any */
+	/**
+	 * Unique id for this context, if any
+	 *
+	 * 此上下文的唯一id(如果有的话)。
+	 */
 	private String id = ObjectUtils.identityToString(this);
 
-	/** Display name */
+	/**
+	 * Display name
+	 * 显示名称
+	 */
 	private String displayName = ObjectUtils.identityToString(this);
 
-	/** Parent context */
+	/**
+	 * Parent context
+	 *  父上下文
+	 */
 	@Nullable
 	private ApplicationContext parent;
 
-	/** Environment used by this context */
+	/**
+	 * Environment used by this context
+	 *
+	 * 此上下文使用的环境
+	 * */
 	@Nullable
 	private ConfigurableEnvironment environment;
 
-	/** BeanFactoryPostProcessors to apply on refresh */
+	/**
+	 * BeanFactoryPostProcessors to apply on refresh
+	 *
+	 * 应用于刷新的 BeanFactoryPostProcessors
+	 * */
 	private final List<BeanFactoryPostProcessor> beanFactoryPostProcessors = new ArrayList<>();
 
-	/** System time in milliseconds when this context started */
+	/**
+	 * System time in milliseconds when this context started
+	 *  此上下文启动时的系统时间(毫秒)
+	 *
+	 * */
 	private long startupDate;
 
-	/** Flag that indicates whether this context is currently active */
+	/**
+	 * Flag that indicates whether this context is currently active
+	 *
+	 * 指示此上下文当前是否处于活动状态的标志
+	 * */
 	private final AtomicBoolean active = new AtomicBoolean();
 
-	/** Flag that indicates whether this context has been closed already */
+	/**
+	 * Flag that indicates whether this context has been closed already
+	 *
+	 * 指示此上下文是否已关闭的标志
+	 * */
 	private final AtomicBoolean closed = new AtomicBoolean();
 
-	/** Synchronization monitor for the "refresh" and "destroy" */
+	/**
+	 *
+	 * Synchronization monitor for the "refresh" and "destroy"
+	 *
+	 * 用于"刷新" 和 "销毁" 时的同步监视器（浅显是说就是当做锁）
+	 * */
 	private final Object startupShutdownMonitor = new Object();
 
-	/** Reference to the JVM shutdown hook, if registered */
+	/**
+	 *
+	 * Reference to the JVM shutdown hook, if registered
+	 * 如果已注册，则引用JVM关闭链接
+	 * */
 	@Nullable
 	private Thread shutdownHook;
 
-	/** ResourcePatternResolver used by this context */
+	/**
+	 * ResourcePatternResolver used by this context
+	 *
+	 *  此上下文使用的 ResourcePatternResolver 资源模式解析器
+	 *
+	 * */
 	private ResourcePatternResolver resourcePatternResolver;
 
-	/** LifecycleProcessor for managing the lifecycle of beans within this context */
+	/**
+	 * LifecycleProcessor for managing the lifecycle of beans within this context
+	 *  LifecycleProcessor 生命周期处理器，用于在此上下文中管理bean的生命周期
+	 *
+	 * */
 	@Nullable
 	private LifecycleProcessor lifecycleProcessor;
 
-	/** MessageSource we delegate our implementation of this interface to */
+	/**
+	 * MessageSource we delegate our implementation of this interface to
+	 *
+	 *  我们将这个接口的实现委托给 MessageSource
+	 * */
 	@Nullable
 	private MessageSource messageSource;
 
-	/** Helper class used in event publishing */
+	/**
+	 * Helper class used in event publishing
+	 *
+	 *  事件发布所使用的助手类
+	 *
+	 * */
 	@Nullable
 	private ApplicationEventMulticaster applicationEventMulticaster;
 
-	/** Statically specified listeners */
+	/**
+	 *  Statically specified listeners
+	 *
+	 *  静态的、指定的 listeners 监听器Set集合
+	 */
 	private final Set<ApplicationListener<?>> applicationListeners = new LinkedHashSet<>();
 
 	/**
@@ -307,6 +378,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * default with this method is one option but configuration through {@link
 	 * #getEnvironment()} should also be considered. In either case, such modifications
 	 * should be performed <em>before</em> {@link #refresh()}.
+	 *
+	 * 为这个应用程序上下文设置 Environment 环境
+     * 默认值由 createEnvironment()方法决定。
+     * 用这个方法替换默认值不是唯一选择，还可通过 getEnvironment() 方法进行配置。
+	 * 但不管在哪一种情况下，这些修改都应该在 refresh() 方法前执行
 	 * @see org.springframework.context.support.AbstractApplicationContext#createEnvironment
 	 */
 	@Override
@@ -318,6 +394,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * Return the {@code Environment} for this application context in configurable
 	 * form, allowing for further customization.
 	 * <p>If none specified, a default environment will be initialized via
+	 *
+	 * 获取并返回此应用上下文的环境，如果为null，则通过 createEnvironment() 方法进行创建并返回
 	 * {@link #createEnvironment()}.
 	 */
 	@Override
@@ -583,6 +661,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				registerListeners();
 
 				// Instantiate all remaining (non-lazy-init) singletons.
+				//初始化bean，解析依赖，依赖注入
+				//往往所有普通的容器的类都是在这个阶段完成初始化和依赖注入，这里所谓普通的容器类，是指非spring配置类，非继承spring扩展点类
+				//例如平时web项目中的service，controller，repository
 				finishBeanFactoryInitialization(beanFactory);
 
 				// Last step: publish corresponding event.
