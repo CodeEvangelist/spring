@@ -203,6 +203,10 @@ public abstract class AbstractBeanDefinitionReader implements EnvironmentCapable
 	 * @param actualResources a Set to be filled with the actual Resource objects
 	 * that have been resolved during the loading process. May be {@code null}
 	 * to indicate that the caller is not interested in those Resource objects.
+	 *
+	 * 这里首先只会去加载资源，真正解析xml将xml节点变成Beanfinition是在
+	 * {@linkplain BeanDefinitionReader#loadBeanDefinitions(org.springframework.core.io.Resource)}
+	 *
 	 * @return the number of bean definitions found
 	 * @throws BeanDefinitionStoreException in case of loading or parsing errors
 	 * @see #getResourceLoader()

@@ -129,11 +129,11 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			closeBeanFactory();
 		}
 		try {
-			//创建一个BeanFactory
+			//创建一个BeanFactory,最基础的spring容器，没有太多的功能
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
 			beanFactory.setSerializationId(getId());
 			customizeBeanFactory(beanFactory);
-			//加载BeanDefinitions
+			//加载BeanDefinitions,这里对不同的bean定义方式，有不同的实现，常见的有xml，注解两种方式
 			loadBeanDefinitions(beanFactory);
 			//持有对beanFactory的引用
 			this.beanFactory = beanFactory;
