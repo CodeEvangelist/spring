@@ -46,6 +46,8 @@ import org.springframework.util.StringUtils;
  * {@link org.springframework.beans.factory.config.AutowireCapableBeanFactory}
  * interface.
  *
+ * 这里就是对bean的描述，包括常见的属性，例如注入方式等等
+ *
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @author Rob Harrop

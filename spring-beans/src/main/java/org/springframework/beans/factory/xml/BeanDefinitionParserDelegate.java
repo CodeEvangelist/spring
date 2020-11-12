@@ -73,6 +73,11 @@ import org.springframework.util.xml.DomUtils;
  * {@link BeanDefinitionParser BeanDefinitionParsers} or
  * {@link BeanDefinitionDecorator BeanDefinitionDecorators}.
  *
+ * 这里就是bean解析器的委托，这个类包含了各种对于bean规则的处理
+ * 常见的就是xml配置文件中的<bean></bean>标签
+ *
+ * 包含了bean标签中的很多的属性等等...
+ *
  * @author Rob Harrop
  * @author Juergen Hoeller
  * @author Rod Johnson
@@ -433,7 +438,7 @@ public class BeanDefinitionParserDelegate {
 		if (containingBean == null) {
 			checkNameUniqueness(beanName, aliases, ele);
 		}
-
+		//这里获取到beandefinition
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
 		if (beanDefinition != null) {
 			if (!StringUtils.hasText(beanName)) {
@@ -465,6 +470,7 @@ public class BeanDefinitionParserDelegate {
 				}
 			}
 			String[] aliasesArray = StringUtils.toStringArray(aliases);
+			//将beandifition放入hodler中
 			return new BeanDefinitionHolder(beanDefinition, beanName, aliasesArray);
 		}
 
