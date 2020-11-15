@@ -6,6 +6,9 @@
 	<bean id="someMessageSource" name="yourMessageSource"
 			class="org.springframework.context.support.StaticMessageSource"/>
 
+	<bean id="contextDemo" name="contextDemo"
+		  class="org.springframework.context.support.ContextDemo"/>
+
 	<bean class="org.springframework.context.support.ClassPathXmlApplicationContext" lazy-init="true">
 		<constructor-arg value="someNonExistentFile.xml"/>
 	</bean>

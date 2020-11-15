@@ -103,10 +103,15 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	/** Map between containing bean names: bean name --> Set of bean names that the bean contains */
 	private final Map<String, Set<String>> containedBeanMap = new ConcurrentHashMap<>(16);
 
-	/** Map between dependent bean names: bean name --> Set of dependent bean names */
+	/**
+	 * Map between dependent bean names: bean name --> Set of dependent bean names
+	 * 依赖缓存，标识某个bean依赖的所有bean，key是bean的名称，value是被依赖的bean的set集合，和{@link dependenciesForBeanMap}相反
+	 * */
 	private final Map<String, Set<String>> dependentBeanMap = new ConcurrentHashMap<>(64);
 
-	/** Map between depending bean names: bean name --> Set of bean names for the bean's dependencies */
+	/** Map between depending bean names: bean name --> Set of bean names for the bean's dependencies
+	 * 依赖缓存，标识bean被依赖的所有bean，key是被依赖bean的名称，value是所有依赖bean的set集合，和和{@link dependentBeanMap}相反
+	 * */
 	private final Map<String, Set<String>> dependenciesForBeanMap = new ConcurrentHashMap<>(64);
 
 
@@ -322,6 +327,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	/**
 	 * Return whether the specified singleton bean is currently in creation
 	 * (within the entire factory).
+	 *
+	 * 判断bean是否已经完全初始化了
 	 * @param beanName the name of the bean
 	 */
 	public boolean isSingletonCurrentlyInCreation(String beanName) {
@@ -391,10 +398,12 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	/**
 	 * Register a dependent bean for the given bean,
 	 * to be destroyed before the given bean is destroyed.
+	 * 将依赖注册到缓存中
 	 * @param beanName the name of the bean
 	 * @param dependentBeanName the name of the dependent bean
 	 */
 	public void registerDependentBean(String beanName, String dependentBeanName) {
+		//按照统一的规则转换一下名称
 		String canonicalName = canonicalName(beanName);
 
 		synchronized (this.dependentBeanMap) {

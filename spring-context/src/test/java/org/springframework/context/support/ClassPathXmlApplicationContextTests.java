@@ -84,7 +84,8 @@ public class ClassPathXmlApplicationContextTests {
 		System.out.println("xml file path:"+FQ_SIMPLE_CONTEXT);
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(FQ_SIMPLE_CONTEXT);
 
-		assertTrue(ctx.containsBean("someMessageSource"));
+		assertTrue(ctx.containsBean("contextDemo"));
+		//出现BeanInstantiationException异常，原因是spring不会管理抽象类
 		ctx.close();
 	}
 

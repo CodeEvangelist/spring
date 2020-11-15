@@ -449,6 +449,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	/**
 	 * Central method of this class: creates a bean instance,
 	 * populates the bean instance, applies post-processors, etc.
+	 * 方法过程:
+	 * --创建一个bean实例
+	 * --填充bean实例
+	 * --应用后处理程序等
 	 * @see #doCreateBean
 	 */
 	@Override
