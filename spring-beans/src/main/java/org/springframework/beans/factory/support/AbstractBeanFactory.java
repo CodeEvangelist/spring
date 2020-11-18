@@ -150,7 +150,10 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	/** BeanPostProcessors to apply in createBean */
 	private final List<BeanPostProcessor> beanPostProcessors = new CopyOnWriteArrayList<>();
 
-	/** Indicates whether any InstantiationAwareBeanPostProcessors have been registered */
+	/**
+	 * Indicates whether any InstantiationAwareBeanPostProcessors have been registered
+	 * 指示是否已经注册了任何实例化awarebeanpostprocessors
+	 * */
 	private volatile boolean hasInstantiationAwareBeanPostProcessors;
 
 	/** Indicates whether any DestructionAwareBeanPostProcessors have been registered */
@@ -324,7 +327,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 						//不直接将被依赖bean放入依赖方，而是先将依赖关系放入缓存
 						registerDependentBean(dep, beanName);
 						try {
-							//初始化依赖bean
+							//初始化依赖bean,这里是递归调用，会直到取出来的bean的dependsOn为null为止
+							//所以在这里就开始对依赖进行解析了
 							getBean(dep);
 						}
 						catch (NoSuchBeanDefinitionException ex) {
@@ -336,7 +340,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 				// 单例
 				if (mbd.isSingleton()) {
-					//这里创建出来的可能是FactoryBean
+					//这里创建出来的可能是FactoryBean，还通过匿名类的方式设置一个回调函数
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
 							return createBean(beanName, mbd, args);
