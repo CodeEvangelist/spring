@@ -29,6 +29,8 @@ public class BeanCurrentlyInCreationException extends BeanCreationException {
 	/**
 	 * Create a new BeanCurrentlyInCreationException,
 	 * with a default error message that indicates a circular reference.
+	 *
+	 * 当前bean正在被创建异常
 	 * @param beanName the name of the bean requested
 	 */
 	public BeanCurrentlyInCreationException(String beanName) {

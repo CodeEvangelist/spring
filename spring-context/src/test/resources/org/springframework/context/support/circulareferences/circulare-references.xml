@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "https://www.springframework.org/dtd/spring-beans-2.0.dtd">
+
+<beans>
+
+	<bean id="beanA" class="org.springframework.context.support.circulareferences.BeanA">
+		<property name="beanB" ref="beanB"/>
+	</bean>
+
+	<bean id="beanB" class="org.springframework.context.support.circulareferences.BeanB">
+		<property name="beanA" ref="beanA"/>
+	</bean>
+</beans>

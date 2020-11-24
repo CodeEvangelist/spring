@@ -36,6 +36,8 @@ import org.springframework.beans.factory.CannotLoadBeanClassException;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.MessageSource;
+import org.springframework.context.support.circulareferences.BeanA;
+import org.springframework.context.support.circulareferences.BeanB;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -76,6 +78,8 @@ public class ClassPathXmlApplicationContextTests {
 	private static final String ALIAS_FOR_PARENT_CONTEXT = PATH + "aliasForParent.xml";
 	private static final String TEST_PROPERTIES = "test.properties";
 
+	private static final String CIRCULARE_REFERENCES=PATH+"circulareferences/circulare-references.xml";
+
 	/**
 	 * 首次学习spring中bean的xml加载流程
 	 */
@@ -83,9 +87,23 @@ public class ClassPathXmlApplicationContextTests {
 	public void testSingleConfigLocation() {
 		System.out.println("xml file path:"+FQ_SIMPLE_CONTEXT);
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(FQ_SIMPLE_CONTEXT);
+		assertTrue(ctx.containsBean("someMessageSource"));
 
-		assertTrue(ctx.containsBean("contextDemo"));
+		//assertTrue(ctx.containsBean("contextDemo"));
 		//出现BeanInstantiationException异常，原因是spring不会管理抽象类
+		ctx.close();
+	}
+
+	/**
+	 * 了解spring中解析循环依赖的过程
+	 */
+	@Test
+	public void testCirculareReferences() {
+		System.out.println("xml file path:"+CIRCULARE_REFERENCES);
+		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(CIRCULARE_REFERENCES);
+		BeanA beanA = ctx.getBean("beanA", BeanA.class);
+		BeanB beanB = beanA.getBeanB();
+		System.out.println(beanB);
 		ctx.close();
 	}
 
