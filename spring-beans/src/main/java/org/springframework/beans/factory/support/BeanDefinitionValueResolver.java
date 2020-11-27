@@ -97,6 +97,8 @@ class BeanDefinitionValueResolver {
 	 * <li>A ManagedMap. In this case the value may be a RuntimeBeanReference
 	 * or Collection that will need to be resolved.
 	 * <li>An ordinary object or {@code null}, in which case it's left alone.
+	 *
+	 * 解析bean依赖
 	 * @param argName the name of the argument that the value is defined for
 	 * @param value the value object to resolve
 	 * @return the resolved object
@@ -107,6 +109,7 @@ class BeanDefinitionValueResolver {
 		// to another bean to be resolved.
 		if (value instanceof RuntimeBeanReference) {
 			RuntimeBeanReference ref = (RuntimeBeanReference) value;
+			//解析依赖
 			return resolveReference(argName, ref);
 		}
 		else if (value instanceof RuntimeBeanNameReference) {
@@ -282,6 +285,7 @@ class BeanDefinitionValueResolver {
 	}
 
 	/**
+	 * 解析引用
 	 * Resolve a reference to another bean in the factory.
 	 */
 	@Nullable

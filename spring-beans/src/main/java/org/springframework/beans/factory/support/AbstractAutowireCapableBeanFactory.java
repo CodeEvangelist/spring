@@ -581,6 +581,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				logger.debug("Eagerly caching bean '" + beanName +
 						"' to allow for resolving potential circular references");
 			}
+			//这里只是暴露到1级缓存
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
@@ -600,8 +601,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 						mbd.getResourceDescription(), beanName, "Initialization of bean failed", ex);
 			}
 		}
-
+		//是否需要提前暴露
 		if (earlySingletonExposure) {
+			//这里获取缓存中的bean，并且替换，保证只有bean的引用，当出现循环引用时，初始化一个就自然初始化了另一个
 			Object earlySingletonReference = getSingleton(beanName, false);
 			if (earlySingletonReference != null) {
 				if (exposedObject == bean) {
@@ -1326,7 +1328,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				}
 			}
 		}
-
+		//获取当前bean的所有依赖
 		PropertyValues pvs = (mbd.hasPropertyValues() ? mbd.getPropertyValues() : null);
 
 		int resolvedAutowireMode = mbd.getResolvedAutowireMode();
@@ -1368,6 +1370,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		if (pvs != null) {
+			//属性注入，循环依赖解析
 			applyPropertyValues(beanName, mbd, bw, pvs);
 		}
 	}
@@ -1564,8 +1567,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * Apply the given property values, resolving any runtime references
 	 * to other beans in this bean factory. Must use deep copy, so we
 	 * don't permanently modify this property.
-	 * @param beanName the bean name passed for better exception information
-	 * @param mbd the merged bean definition
+	 *
+	 * 对于给定的运行时引用的属性值，需要深度复制并且后续不能修改
+	 * @param beanName the bean name passed for better exception information bean名称
+	 * @param mbd the merged bean definition  合并过后的bean definition
 	 * @param bw the BeanWrapper wrapping the target object
 	 * @param pvs the new property values
 	 */
@@ -1609,6 +1614,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Create a deep copy, resolving any references for values.
 		List<PropertyValue> deepCopy = new ArrayList<>(original.size());
 		boolean resolveNecessary = false;
+		//遍历属性，解析注入依赖值
 		for (PropertyValue pv : original) {
 			if (pv.isConverted()) {
 				deepCopy.add(pv);
