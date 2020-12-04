@@ -12,8 +12,4 @@
 	<bean class="org.springframework.context.support.ClassPathXmlApplicationContext" lazy-init="true">
 		<constructor-arg value="someNonExistentFile.xml"/>
 	</bean>
-
-	<bean>
-
-	</bean>
 </beans>
