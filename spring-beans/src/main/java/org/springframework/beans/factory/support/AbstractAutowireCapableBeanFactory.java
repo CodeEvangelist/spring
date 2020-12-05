@@ -1771,6 +1771,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 		if (mbd == null || !mbd.isSynthetic()) {
 			//bean前置处理，其实就是在初始化bean之前调用一下在bean实现的所有的BeanPostProcessor的postProcessAfterInitialization方法
+			//代理类就是在这里生成的
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 		}
 

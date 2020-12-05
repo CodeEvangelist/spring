@@ -46,6 +46,8 @@ public interface AopProxy {
 	 * {@code null} will simply be passed down and thus lead to the low-level
 	 * proxy facility's default, which is usually different from the default chosen
 	 * by the AopProxy implementation's {@link #getProxy()} method.
+	 *
+	 * 这里就是根据AOP对象来确定调用什么代理方式生成真正的代理对象，有JDK和CGLIB两种
 	 * @param classLoader the class loader to create the proxy with
 	 * (or {@code null} for the low-level proxy facility's default)
 	 * @return the new proxy object (never {@code null})

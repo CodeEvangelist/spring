@@ -87,6 +87,8 @@ public class ClassPathXmlApplicationContextTests {
 	public void testSingleConfigLocation() {
 		System.out.println("xml file path:"+FQ_SIMPLE_CONTEXT);
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(FQ_SIMPLE_CONTEXT);
+		Object someMessageSource = ctx.getBean("someMessageSource");
+		
 		assertTrue(ctx.containsBean("someMessageSource"));
 
 		//assertTrue(ctx.containsBean("contextDemo"));

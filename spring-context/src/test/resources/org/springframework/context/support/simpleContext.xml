@@ -12,4 +12,9 @@
 	<bean class="org.springframework.context.support.ClassPathXmlApplicationContext" lazy-init="true">
 		<constructor-arg value="someNonExistentFile.xml"/>
 	</bean>
+
+	<!--在这里引入自动创建代理的配置类-->
+	<bean class="org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator"/>
+	<!--引入切面类-->
+	<bean id="aspect" class="org.springframework.aop.aspectj.autoproxy.AdviceUsingThisJoinPoint"/>
 </beans>

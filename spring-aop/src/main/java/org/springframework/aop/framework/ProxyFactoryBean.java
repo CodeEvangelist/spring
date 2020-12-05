@@ -125,7 +125,9 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 	/** Whether the advisor chain has already been initialized */
 	private boolean advisorChainInitialized = false;
 
-	/** If this is a singleton, the cached singleton proxy instance */
+	/** If this is a singleton, the cached singleton proxy instance
+	 * 缓存生成的代理对象
+	 * */
 	@Nullable
 	private Object singletonInstance;
 
@@ -242,13 +244,17 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 	 * Create an instance of the AOP proxy to be returned by this factory.
 	 * The instance will be cached for a singleton, and create on each call to
 	 * {@code getObject()} for a proxy.
+	 *
+	 * 那些被AOP切到的bean，默认实现了ProxyFactoryBean接口，然后在bean的初始化过程中，会调用这个方法
 	 * @return a fresh AOP proxy reflecting the current state of this factory
 	 */
 	@Override
 	@Nullable
 	public Object getObject() throws BeansException {
+		//先初始化代理配置
 		initializeAdvisorChain();
 		if (isSingleton()) {
+			//获取单例的代理对象
 			return getSingletonInstance();
 		}
 		else {
@@ -325,6 +331,7 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 			}
 			// Initialize the shared singleton instance.
 			super.setFrozen(this.freezeProxy);
+			//这里就是获取最终的代理对象处
 			this.singletonInstance = getProxy(createAopProxy());
 		}
 		return this.singletonInstance;
@@ -362,11 +369,17 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 	 * <p>The default implementation uses a {@code getProxy} call with
 	 * the factory's bean class loader. Can be overridden to specify a
 	 * custom class loader.
+	 *
+	 *
+	 * 根据AOP代理对象生成一个真正的bean代理对象
 	 * @param aopProxy the prepared AopProxy instance to get the proxy from
 	 * @return the proxy object to expose
 	 * @see AopProxy#getProxy(ClassLoader)
 	 */
 	protected Object getProxy(AopProxy aopProxy) {
+		//这里的aopProxy其实已经是jdk和cglib两种
+		//如果是jdk，那么调用jdk动态代理创建代理对象
+		//如果是cglib，那么调用cglib动态创建代理对象
 		return aopProxy.getProxy(this.proxyClassLoader);
 	}
 
@@ -438,7 +451,9 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 			}
 
 			// Materialize interceptor chain from bean names.
+			//解析通知点链，可能会有多个切面
 			for (String name : this.interceptorNames) {
+				//如果含有*，那么说明该级目录下的所有bean都要加入切面
 				if (name.endsWith(GLOBAL_SUFFIX)) {
 					if (!(this.beanFactory instanceof ListableBeanFactory)) {
 						throw new AopConfigException(

@@ -73,6 +73,22 @@ public interface BeanPostProcessor {
 	 * {@link InstantiationAwareBeanPostProcessor#postProcessBeforeInstantiation} method,
 	 * in contrast to all other BeanPostProcessor callbacks.
 	 * <p>The default implementation returns the given {@code bean} as-is.
+	 *
+	 *
+	 * 代理类就是在这里生成的,具体生成过程
+	 * 1、{@linkplain org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator#postProcessAfterInitialization(java.lang.Object, java.lang.String)}
+	 * 		因为自动代理需要初始化一个AbstractAutoProxyCreator，而这个类中就重写了此方法，
+	 * 	    所以有AOP 的类通常会默认加上	AbstractAutoProxyCreator的子类标识
+	 * 2、{@linkplain org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator#wrapIfNecessary(java.lang.Object, java.lang.String, java.lang.Object)}
+	 * 3、{@link org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator#createProxy(java.lang.Class, java.lang.String, java.lang.Object[], org.springframework.aop.TargetSource)}
+	 * 4、{@linkplain org.springframework.aop.framework.ProxyFactory#getProxy(java.lang.ClassLoader)}
+	 * 5、根据给定的bean创建具有特性的aop对象
+	 *    {@linkplain org.springframework.aop.framework.ProxyCreatorSupport#createAopProxy()}
+	 *    具体创建AOP对象实现代码
+	 *    {@linkplain org.springframework.aop.framework.DefaultAopProxyFactory#createAopProxy(org.springframework.aop.framework.AdvisedSupport)}
+	 * 6、最终根据不同方式创建代理对象的地方
+	 *   {@linkplain org.springframework.aop.framework.AopProxy#getProxy(java.lang.ClassLoader)}
+	 *
 	 * @param bean the new bean instance
 	 * @param beanName the name of the bean
 	 * @return the bean instance to use, either the original or a wrapped one;

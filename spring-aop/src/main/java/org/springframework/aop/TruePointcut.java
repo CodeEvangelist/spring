@@ -40,8 +40,8 @@ class TruePointcut implements Pointcut, Serializable {
 	}
 
 	@Override
-	public MethodMatcher getMethodMatcher() {
-		return MethodMatcher.TRUE;
+		public MethodMatcher getMethodMatcher() {
+			return MethodMatcher.TRUE;
 	}
 
 	/**
