@@ -205,6 +205,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * @param beanName the name of the bean to look for
 	 * @param allowEarlyReference whether early references should be created or not 是否允许早期引用
 	 * @return the registered singleton object, or {@code null} if none found
+	 * @see org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#getEarlyBeanReference
 	 */
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
@@ -215,6 +216,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				if (singletonObject == null && allowEarlyReference) {
 					ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
 					if (singletonFactory != null) {
+						//如果有循环依赖，并且bean是有代理的，那么执行getObject方法会创建代理对象
+						//org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.getEarlyBeanReference
 						singletonObject = singletonFactory.getObject();
 						this.earlySingletonObjects.put(beanName, singletonObject);
 						this.singletonFactories.remove(beanName);

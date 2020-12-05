@@ -605,6 +605,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 						"' to allow for resolving potential circular references");
 			}
 			//这里只是暴露到1级缓存
+			//这里考虑到循环依赖，并且bean是有代理，所以将bean构造成ObjectFactory，
+			//这样后面从3级缓存拿出来需要调用getObject方法，会动态生成一个代理对象，然后放入到2级缓存
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
@@ -1772,6 +1774,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (mbd == null || !mbd.isSynthetic()) {
 			//bean前置处理，其实就是在初始化bean之前调用一下在bean实现的所有的BeanPostProcessor的postProcessAfterInitialization方法
 			//代理类就是在这里生成的
+			//也就是说如果某个bean有代理，那么其实ioc容器中没有这原来的bean了，只有代理bean
 			wrappedBean = applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
 		}
 

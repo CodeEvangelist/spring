@@ -35,6 +35,7 @@ import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.CannotLoadBeanClassException;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.HierarchicalMessageSource;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.circulareferences.BeanA;
 import org.springframework.context.support.circulareferences.BeanB;
@@ -87,8 +88,10 @@ public class ClassPathXmlApplicationContextTests {
 	public void testSingleConfigLocation() {
 		System.out.println("xml file path:"+FQ_SIMPLE_CONTEXT);
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(FQ_SIMPLE_CONTEXT);
-		Object someMessageSource = ctx.getBean("someMessageSource");
-		
+
+		HierarchicalMessageSource someMessageSource = ctx.getBean("someMessageSource", HierarchicalMessageSource.class);
+		String s = someMessageSource.toString();
+		System.out.println(s);
 		assertTrue(ctx.containsBean("someMessageSource"));
 
 		//assertTrue(ctx.containsBean("contextDemo"));

@@ -46,6 +46,9 @@ public interface MethodInterceptor extends Interceptor {
 	 * Implement this method to perform extra treatments before and
 	 * after the invocation. Polite implementations would certainly
 	 * like to invoke {@link Joinpoint#proceed()}.
+	 *
+	 * 这里什么类型的拦截器就会调用到不同的实现
+	 * spring替我们实现的有方法调用前，方法调用后，环绕等等...
 	 * @param invocation the method invocation joinpoint
 	 * @return the result of the call to {@link Joinpoint#proceed()};
 	 * might be intercepted by the interceptor

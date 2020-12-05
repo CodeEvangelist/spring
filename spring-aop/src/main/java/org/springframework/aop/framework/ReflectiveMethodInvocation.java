@@ -170,6 +170,7 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 			// been evaluated and found to match.
 			InterceptorAndDynamicMethodMatcher dm =
 					(InterceptorAndDynamicMethodMatcher) interceptorOrInterceptionAdvice;
+			//如果是InterceptorAndDynamicMethodMatcher那么是需要对参数进行检查，这样效率必然变低，一般是框架内使用
 			if (dm.methodMatcher.matches(this.method, this.targetClass, this.arguments)) {
 				return dm.interceptor.invoke(this);
 			}
@@ -179,6 +180,7 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
 				return proceed();
 			}
 		}
+		//这里就默认不检查参数，直接进行调用，效率相对来说会变高很多
 		else {
 			// It's an interceptor, so we just invoke it: The pointcut will have
 			// been evaluated statically before this object was constructed.
