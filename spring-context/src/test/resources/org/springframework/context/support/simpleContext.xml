@@ -14,6 +14,7 @@
 	</bean>
 
 	<!--在这里引入自动创建代理的配置类-->
+	<!--其实对于spring来说，这个配置的是一个全局的，如果配置了这个，那么每个类在初始化时都会判断是不是需要代理，所以代理并不是针对具体的bean来实施的-->
 	<bean class="org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator"/>
 	<!--引入切面类-->
 	<bean id="aspect" class="org.springframework.aop.aspectj.autoproxy.AdviceUsingThisJoinPoint"/>
